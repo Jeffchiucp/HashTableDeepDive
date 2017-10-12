@@ -37,7 +37,6 @@ class LinkedList(object):
         current = self.head
         while current is not None:
             result.append(current.data)
-            # result.append(current)
             current = current.next
         return result
 
@@ -45,15 +44,31 @@ class LinkedList(object):
         """Return True if this linked list is empty, or False"""
         return self.head is None
 
+        
     def length(self):
         """Return the length of this linked list by traversing its nodes"""
+        # Node counter initialized to zero
+        node_count = 0
+        # Start at the head node
+        current = self.head
+        # Loop until the current node is None, which is one node past the tail
+        while current is not None:
+            # Count one for this node
+            node_count += 1
+            # Skip to the next node
+            current = current.next
+        # Now node_count contains the number of nodes
+        return node_count
+        
+    def length(self):
+        """Alternative way to return the length of the linked list"""
         return self.nodeCount
 
     def append(self, item):
         """Insert the given item at the tail of this linked list"""
         new_node = Node(item)
         self.nodeCount += 1
-
+        # Check if this linked list is empty
         if self.tail == None and self.head == None:
             self.tail = new_node
             self.head = new_node
@@ -66,24 +81,27 @@ class LinkedList(object):
 
     def prepend(self, item):
         """Insert the given item at the head of this linked list"""
+        # Create a new node to hold the given item
         new_node = Node(item)
-
-        # if self.is_empty():
-        #     self.tail = new_node
-        #     self.head = new_node
-
+        # Check if the linked list is None when head and tail is none
+        # Update head to new node 
         if self.head == None and self.tail == None:
             self.tail = new_node
             self.head = new_node
-        elif self.head == self.tail:
+        elif self.head == self.tail:  
             self.head = new_node
             self.head.next = self.tail
         else:
+           # Otherwise insert new node before head
+        # Update head to new node regardless
             new_node.next = self.head
             self.head = new_node
 
     def delete(self, item):
         """Delete the given item from this linked list, or raise ValueError"""
+        """Best case running time: Omega(1) if item is near the head of the list.
+        Worst case running time: O(n) if item is near the tail of the list or
+        not present and we need to loop through all n nodes in the list."""
         current = self.head
         previous = None
         while current is not None:
@@ -106,10 +124,21 @@ class LinkedList(object):
 
 
     def find(self, quality):
-        """Return an item from this linked list satisfying the given quality"""
-        for item in self.items():
-            if quality(item):
-                return item
+        """Return an item from this linked list satisfying the given quality.
+        Best case running time: Omega(1) if item is near the head of the list.
+        Worst case running time: O(n) if item is near the tail of the list or
+        not present and we need to loop through all n nodes in the list."""
+        current = self.head  # Constant time to assign a variable reference
+        # Loop until the current node is None, which is one node past the tail
+        while current is not None:  # Up to n iterations if we don't exit early
+            # Check if the current node's data satisfyies the quality function
+            if quality(current.data):  # Constant time to call quality function
+                # We found data satisfying the quality function, so exit early
+                return current.data  # Constant time to return data
+            # Skip to the next node
+            current = current.next  # Constant time to reassign a variable
+        # We never found data satisfying quality, but have to return something
+        return None  # Constant time to return None
 
     def replace(self, quality, new_data):
         """replace an item from this linked list satisfying the given quality"""
